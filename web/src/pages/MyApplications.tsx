@@ -1,13 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getUserApplications } from '../services/applicationService';
+import { getJobById } from '../services/jobService';
 import { formatDate } from '../utils/formatters';
 import { JobApplication } from '../types/JobApplication';
+import { Job } from '../types/Job';
+import LoadingSpinner from '../components/LoadingSpinner';
 import '../styles/MyApplications.css';
+
+interface ApplicationWithJob extends JobApplication {
+  job?: Job;
+}
 
 const MyApplications: React.FC = () => {
   const navigate = useNavigate();
-  const [applications, setApplications] = useState<JobApplication[]>([]);
+  const [applications, setApplications] = useState<ApplicationWithJob[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -16,7 +23,24 @@ const MyApplications: React.FC = () => {
       try {
         setLoading(true);
         const data = await getUserApplications();
-        setApplications(data);
+        
+        // Fetch job details for each application
+        const applicationsWithJobs = await Promise.all(
+          data.map(async (application: JobApplication) => {
+            try {
+              if (application.jobId) {
+                const jobData = await getJobById(application.jobId);
+                return { ...application, job: jobData };
+              }
+              return application;
+            } catch (err) {
+              console.error(`Error fetching job ${application.jobId}:`, err);
+              return application;
+            }
+          })
+        );
+        
+        setApplications(applicationsWithJobs);
         setError(null);
       } catch (err) {
         setError('Failed to load your applications');
@@ -44,15 +68,18 @@ const MyApplications: React.FC = () => {
     }
   };
 
+  const handleViewJob = (jobId: number | undefined) => {
+    if (!jobId) {
+      console.error('Job ID is undefined');
+      return;
+    }
+    
+    // Use the navigate function to go to the job detail page
+    navigate(`/jobs/${jobId}`);
+  };
+
   if (loading) {
-    return (
-      <div className="page-container">
-        <div className="page-header">
-          <h1 className="page-title">My Applications</h1>
-          <p className="page-subtitle">Loading your applications...</p>
-        </div>
-      </div>
-    );
+    return <LoadingSpinner message="Loading your applications..." />;
   }
 
   if (error) {
@@ -88,18 +115,21 @@ const MyApplications: React.FC = () => {
           {applications.map((application) => (
             <div className="application-card" key={application.id}>
               <div className="application-header">
-                <h3>{application.jobTitle}</h3>
+                <h3>{application.job?.title || application.jobTitle}</h3>
                 <span className={`application-status ${getStatusClass(application.status)}`}>
                   {application.status}
                 </span>
               </div>
-              <div className="application-company">{application.companyName}</div>
+              <div className="application-company">{application.job?.company || application.companyName}</div>
+              {application.job?.location && (
+                <div className="application-location">{application.job.location}</div>
+              )}
               <div className="application-date">
                 Applied {formatDate(application.appliedAt)}
               </div>
               <button 
                 className="view-job-button"
-                onClick={() => navigate(`/jobs/${application.jobId}`)}
+                onClick={() => handleViewJob(application.jobId)}
               >
                 View Job
               </button>
