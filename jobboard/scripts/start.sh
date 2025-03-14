@@ -47,7 +47,7 @@ if ! mysql -u root -e "USE jobboard;" 2>/dev/null; then
         fi
     fi
 else
-    echo -e "${GREEN}Database 'jobboard' exists.${NC}"
+    echo -e "${GREEN}Database 'jobboard' exists. Data will be preserved.${NC}"
 fi
 
 # Check if the JAR file exists

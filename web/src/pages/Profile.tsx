@@ -1,7 +1,40 @@
-import { FC } from 'react';
+import { FC, useState } from 'react';
+import { useAuth } from '../context/AuthContext';
+import LoadingSpinner from '../components/LoadingSpinner';
 import '../styles/Profile.css';
 
 const Profile: FC = () => {
+  const { user, isLoading } = useAuth();
+  const [isEditing, setIsEditing] = useState(false);
+  const [phone, setPhone] = useState('(555) 123-4567');
+  const [location, setLocation] = useState('San Francisco, CA');
+  
+  if (isLoading) {
+    return <LoadingSpinner message="Loading profile..." />;
+  }
+  
+  if (!user) {
+    return (
+      <div className="page-container">
+        <div className="page-header">
+          <h1 className="page-title">My Profile</h1>
+          <p className="page-subtitle">Please log in to view your profile</p>
+        </div>
+      </div>
+    );
+  }
+  
+  const fullName = `${user.firstName || ''} ${user.lastName || ''}`.trim() || 'User';
+  
+  const handleEditToggle = () => {
+    setIsEditing(!isEditing);
+  };
+  
+  const handleSaveProfile = () => {
+    // In a real app, you would save the profile changes to the backend
+    setIsEditing(false);
+  };
+  
   return (
     <div className="page-container">
       <div className="page-header">
@@ -35,10 +68,23 @@ const Profile: FC = () => {
             </svg>
           </div>
           <div className="profile-info">
-            <h2>John Doe</h2>
-            <p className="profile-email">john.doe@example.com</p>
-            <p className="profile-location">San Francisco, CA</p>
-            <button className="edit-profile-button">Edit Profile</button>
+            <h2>{fullName}</h2>
+            <p className="profile-email">{user.email}</p>
+            <p className="profile-location">{location}</p>
+            <button 
+              className="edit-profile-button"
+              onClick={handleEditToggle}
+            >
+              {isEditing ? 'Cancel' : 'Edit Profile'}
+            </button>
+            {isEditing && (
+              <button 
+                className="save-profile-button"
+                onClick={handleSaveProfile}
+              >
+                Save Changes
+              </button>
+            )}
           </div>
         </div>
         
@@ -47,19 +93,52 @@ const Profile: FC = () => {
           <div className="profile-details">
             <div className="profile-detail-item">
               <span className="detail-label">Full Name</span>
-              <span className="detail-value">John Doe</span>
+              {isEditing ? (
+                <div className="detail-edit">
+                  <input 
+                    type="text" 
+                    value={user.firstName || ''} 
+                    placeholder="First Name"
+                    disabled
+                  />
+                  <input 
+                    type="text" 
+                    value={user.lastName || ''} 
+                    placeholder="Last Name"
+                    disabled
+                  />
+                </div>
+              ) : (
+                <span className="detail-value">{fullName}</span>
+              )}
             </div>
             <div className="profile-detail-item">
               <span className="detail-label">Email</span>
-              <span className="detail-value">john.doe@example.com</span>
+              <span className="detail-value">{user.email}</span>
             </div>
             <div className="profile-detail-item">
               <span className="detail-label">Phone</span>
-              <span className="detail-value">(555) 123-4567</span>
+              {isEditing ? (
+                <input 
+                  type="text" 
+                  value={phone} 
+                  onChange={(e) => setPhone(e.target.value)}
+                />
+              ) : (
+                <span className="detail-value">{phone}</span>
+              )}
             </div>
             <div className="profile-detail-item">
               <span className="detail-label">Location</span>
-              <span className="detail-value">San Francisco, CA</span>
+              {isEditing ? (
+                <input 
+                  type="text" 
+                  value={location} 
+                  onChange={(e) => setLocation(e.target.value)}
+                />
+              ) : (
+                <span className="detail-value">{location}</span>
+              )}
             </div>
           </div>
         </div>
@@ -99,13 +178,13 @@ const Profile: FC = () => {
           <div className="preferences-container">
             <div className="preference-item">
               <label className="preference-label">
-                <input type="checkbox" checked />
+                <input type="checkbox" defaultChecked />
                 <span>Email notifications for new job matches</span>
               </label>
             </div>
             <div className="preference-item">
               <label className="preference-label">
-                <input type="checkbox" checked />
+                <input type="checkbox" defaultChecked />
                 <span>Application status updates</span>
               </label>
             </div>

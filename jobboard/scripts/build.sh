@@ -46,7 +46,7 @@ if [ "$1" != "--skip-tests" ]; then
                 fi
             fi
         else
-            echo -e "${GREEN}Database 'jobboard' exists.${NC}"
+            echo -e "${GREEN}Database 'jobboard' exists. Data will be preserved.${NC}"
         fi
     fi
 fi

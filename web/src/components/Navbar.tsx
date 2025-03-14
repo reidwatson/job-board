@@ -1,4 +1,5 @@
 import { FC, useState, useRef, useEffect } from 'react';
+import { useAuth } from '../context/AuthContext';
 import '../styles/Navbar.css';
 
 interface NavbarProps {
@@ -9,6 +10,7 @@ interface NavbarProps {
 const Navbar: FC<NavbarProps> = ({ activePage, onNavigate }) => {
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const profileMenuRef = useRef<HTMLDivElement>(null);
+  const { user, logout } = useAuth();
 
   // Close profile menu when clicking outside
   useEffect(() => {
@@ -23,6 +25,11 @@ const Navbar: FC<NavbarProps> = ({ activePage, onNavigate }) => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
+
+  const handleLogout = () => {
+    logout();
+    setProfileMenuOpen(false);
+  };
 
   return (
     <nav className="navbar">
@@ -72,7 +79,7 @@ const Navbar: FC<NavbarProps> = ({ activePage, onNavigate }) => {
                 strokeLinejoin="round"
               />
             </svg>
-            <span>Profile</span>
+            <span>{user?.firstName || 'Profile'}</span>
           </button>
           
           {profileMenuOpen && (
@@ -106,7 +113,10 @@ const Navbar: FC<NavbarProps> = ({ activePage, onNavigate }) => {
                 My Applications
               </button>
               <div className="dropdown-divider"></div>
-              <button className="dropdown-item">
+              <button 
+                className="dropdown-item"
+                onClick={handleLogout}
+              >
                 <svg className="dropdown-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M9 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                   <path d="M16 17L21 12L16 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>

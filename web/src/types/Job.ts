@@ -5,7 +5,10 @@ export interface Job {
   location: string;
   description: string;
   requirements?: string;
-  salary: number;
+  salary?: number;
+  minSalary?: number;
+  maxSalary?: number;
   contactEmail?: string;
-  postedDate: string;
+  postedDate?: string;
+  createdAt: string;
 } 

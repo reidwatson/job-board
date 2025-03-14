@@ -1,0 +1,135 @@
+.auth-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+  padding: 20px;
+  background-color: var(--light-gray);
+}
+
+.auth-logo {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.auth-logo h1 {
+  font-size: 2rem;
+  color: var(--primary-color);
+  margin-bottom: 5px;
+}
+
+.auth-logo p {
+  color: var(--dark-gray);
+  font-size: 1rem;
+}
+
+.auth-card {
+  background-color: var(--white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: 30px;
+  width: 100%;
+  max-width: 400px;
+  border-top: 4px solid var(--primary-color);
+}
+
+.auth-card h2 {
+  margin-top: 0;
+  margin-bottom: 24px;
+  text-align: center;
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+.auth-error {
+  background-color: #ffebee;
+  color: #d32f2f;
+  padding: 10px;
+  border-radius: var(--radius-md);
+  margin-bottom: 20px;
+  font-size: 14px;
+  border-left: 4px solid #d32f2f;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 500;
+  color: var(--dark-gray);
+}
+
+.form-group input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--medium-gray);
+  border-radius: var(--radius-md);
+  font-size: 16px;
+  transition: border-color 0.2s;
+}
+
+.form-group input:focus {
+  border-color: var(--primary-color);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 187, 185, 0.2);
+}
+
+.auth-button {
+  width: 100%;
+  padding: 12px;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.2s;
+  box-shadow: 0 2px 4px rgba(0, 187, 185, 0.2);
+}
+
+.auth-button:hover {
+  background-color: #00a6a4;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 187, 185, 0.3);
+}
+
+.auth-button:disabled {
+  background-color: #7fdcdb;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.auth-toggle {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.auth-toggle p {
+  color: var(--dark-gray);
+  margin-bottom: 0;
+}
+
+.toggle-button {
+  background: none;
+  border: none;
+  color: var(--accent-color);
+  font-weight: 500;
+  cursor: pointer;
+  padding: 4px 8px;
+  margin-left: 5px;
+}
+
+.toggle-button:hover {
+  text-decoration: underline;
+}
+
+.toggle-button:disabled {
+  color: #ffb380;
+  cursor: not-allowed;
+} 
