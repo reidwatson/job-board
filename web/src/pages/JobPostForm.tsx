@@ -1,4 +1,6 @@
 import { FC, useState, FormEvent, ChangeEvent } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { createJob } from '../services/jobService';
 import '../styles/JobPostForm.css';
 
 interface JobFormData {
@@ -11,11 +13,8 @@ interface JobFormData {
   contactEmail: string;
 }
 
-interface JobPostFormProps {
-  onJobPosted: () => void;
-}
-
-const JobPostForm: FC<JobPostFormProps> = ({ onJobPosted }) => {
+const JobPostForm: FC = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState<JobFormData>({
     title: '',
     company: '',
@@ -64,20 +63,13 @@ const JobPostForm: FC<JobPostFormProps> = ({ onJobPosted }) => {
       };
       
       // Submit to API
-      const response = await fetch('/api/jobs', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(jobData)
-      });
+      const response = await createJob(jobData);
       
-      if (!response.ok) {
-        throw new Error(`Error: ${response.status} ${response.statusText}`);
+      if (!response || !response.success) {
+        throw new Error(response?.message || 'Failed to create job');
       }
       
-      const data = await response.json();
-      console.log('Job posted successfully:', data);
+      console.log('Job posted successfully:', response);
       
       // Reset form and show success message
       setFormData({
@@ -91,6 +83,11 @@ const JobPostForm: FC<JobPostFormProps> = ({ onJobPosted }) => {
       });
       
       setSuccess(true);
+      
+      // Navigate to jobs page after a delay
+      setTimeout(() => {
+        navigate('/jobs');
+      }, 2000);
       
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An unknown error occurred');
@@ -250,47 +247,49 @@ const JobPostForm: FC<JobPostFormProps> = ({ onJobPosted }) => {
               name="contactEmail"
               value={formData.contactEmail}
               onChange={handleChange}
-              placeholder="e.g. jobs@company.com"
+              placeholder="e.g. careers@example.com"
             />
           </div>
           
-          <div className="form-group full-width">
+          <div className="form-group">
             <label htmlFor="description">Job Description *</label>
             <textarea
               id="description"
               name="description"
               value={formData.description}
               onChange={handleChange}
-              placeholder="Describe the job role, responsibilities, and what the candidate will be doing..."
-              rows={5}
+              rows={6}
+              placeholder="Describe the job responsibilities and expectations..."
               required
-            />
+            ></textarea>
           </div>
           
-          <div className="form-group full-width">
+          <div className="form-group">
             <label htmlFor="requirements">Requirements</label>
             <textarea
               id="requirements"
               name="requirements"
               value={formData.requirements}
               onChange={handleChange}
-              placeholder="List the skills, qualifications, and experience required for this position..."
-              rows={5}
-            />
+              rows={4}
+              placeholder="List qualifications, skills, and experience required..."
+            ></textarea>
           </div>
           
           <div className="form-actions">
             <button 
+              type="button" 
+              className="cancel-button"
+              onClick={() => navigate('/jobs')}
+            >
+              Cancel
+            </button>
+            <button 
               type="submit" 
-              className="submit-button accent-button"
+              className="submit-button"
               disabled={isSubmitting}
             >
-              {isSubmitting ? (
-                <>
-                  <span className="spinner"></span>
-                  Posting...
-                </>
-              ) : 'Post Job'}
+              {isSubmitting ? 'Posting...' : 'Post Job'}
             </button>
           </div>
         </form>

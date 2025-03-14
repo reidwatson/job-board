@@ -148,6 +148,17 @@
   color: var(--dark-gray);
 }
 
+.application-location {
+  font-size: 0.875rem;
+  color: var(--dark-gray);
+  margin-bottom: var(--space-2);
+}
+
+.application-location::before {
+  content: '📍';
+  margin-right: 4px;
+}
+
 @media (max-width: 768px) {
   .applications-list {
     grid-template-columns: 1fr;

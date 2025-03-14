@@ -208,4 +208,39 @@
     right: 0;
     width: 200px;
   }
+}
+
+.navbar-auth {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.auth-button {
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  font-size: 0.9rem;
+}
+
+.login-button {
+  background-color: transparent;
+  color: var(--primary-color);
+  border: 1px solid var(--primary-color);
+}
+
+.login-button:hover {
+  background-color: rgba(var(--primary-rgb), 0.1);
+}
+
+.signup-button {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.signup-button:hover {
+  background-color: var(--primary-dark);
 } 

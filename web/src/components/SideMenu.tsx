@@ -1,4 +1,5 @@
 import { FC } from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../styles/SideMenu.css';
 
 interface SideMenuProps {
@@ -7,6 +8,38 @@ interface SideMenuProps {
 }
 
 const SideMenu: FC<SideMenuProps> = ({ activePage, onNavigate }) => {
+  const navigate = useNavigate();
+
+  const handleNavigate = (page: string) => {
+    // Use both the App's navigation and React Router
+    onNavigate(page);
+    
+    // Map internal paths to actual routes
+    switch (page) {
+      case 'browse':
+        navigate('/jobs');
+        break;
+      case 'local':
+        navigate('/local');
+        break;
+      case 'search':
+        navigate('/search');
+        break;
+      case 'profile':
+        navigate('/profile');
+        break;
+      case 'applications':
+        navigate('/applications');
+        break;
+      case 'post':
+        navigate('/post');
+        break;
+      default:
+        navigate('/jobs');
+        break;
+    }
+  };
+
   return (
     <div className="side-menu">
       <div className="menu-section">
@@ -14,7 +47,7 @@ const SideMenu: FC<SideMenuProps> = ({ activePage, onNavigate }) => {
         <nav className="side-menu-nav">
           <button 
             className={`menu-item ${activePage === 'browse' ? 'active' : ''}`}
-            onClick={() => onNavigate('browse')}
+            onClick={() => handleNavigate('browse')}
           >
             <svg className="menu-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M4 7H20" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
@@ -25,7 +58,7 @@ const SideMenu: FC<SideMenuProps> = ({ activePage, onNavigate }) => {
           </button>
           <button 
             className={`menu-item ${activePage === 'local' ? 'active' : ''}`}
-            onClick={() => onNavigate('local')}
+            onClick={() => handleNavigate('local')}
           >
             <svg className="menu-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M12 21C16.4183 21 20 17.4183 20 13C20 8.58172 16.4183 5 12 5C7.58172 5 4 8.58172 4 13C4 17.4183 7.58172 21 12 21Z" stroke="currentColor" strokeWidth="2"/>
@@ -36,7 +69,7 @@ const SideMenu: FC<SideMenuProps> = ({ activePage, onNavigate }) => {
           </button>
           <button 
             className={`menu-item ${activePage === 'search' ? 'active' : ''}`}
-            onClick={() => onNavigate('search')}
+            onClick={() => handleNavigate('search')}
           >
             <svg className="menu-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M11 19C15.4183 19 19 15.4183 19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19Z" stroke="currentColor" strokeWidth="2"/>
@@ -52,7 +85,7 @@ const SideMenu: FC<SideMenuProps> = ({ activePage, onNavigate }) => {
         <nav className="side-menu-nav">
           <button 
             className={`menu-item ${activePage === 'profile' ? 'active' : ''}`}
-            onClick={() => onNavigate('profile')}
+            onClick={() => handleNavigate('profile')}
           >
             <svg className="menu-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M12 12C14.7614 12 17 9.76142 17 7C17 4.23858 14.7614 2 12 2C9.23858 2 7 4.23858 7 7C7 9.76142 9.23858 12 12 12Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -62,7 +95,7 @@ const SideMenu: FC<SideMenuProps> = ({ activePage, onNavigate }) => {
           </button>
           <button 
             className={`menu-item ${activePage === 'applications' ? 'active' : ''}`}
-            onClick={() => onNavigate('applications')}
+            onClick={() => handleNavigate('applications')}
           >
             <svg className="menu-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M9 5H7C5.89543 5 5 5.89543 5 7V19C5 20.1046 5.89543 21 7 21H17C18.1046 21 19 20.1046 19 19V7C19 5.89543 18.1046 5 17 5H15" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
@@ -80,7 +113,7 @@ const SideMenu: FC<SideMenuProps> = ({ activePage, onNavigate }) => {
         <nav className="side-menu-nav">
           <button 
             className={`menu-item ${activePage === 'post' ? 'active' : ''}`}
-            onClick={() => onNavigate('post')}
+            onClick={() => handleNavigate('post')}
           >
             <svg className="menu-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M12 5V19" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>

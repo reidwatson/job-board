@@ -5,6 +5,7 @@ import { formatSalary, formatDate } from '../utils/formatters';
 import { Job } from '../types/Job';
 import { applyForJob, hasUserAppliedForJob } from '../services/applicationService';
 import LoadingSpinner from '../components/LoadingSpinner';
+import { useAuth } from '../context/AuthContext';
 import '../styles/JobDetail.css';
 
 interface JobDetailProps {
@@ -15,6 +16,7 @@ interface JobDetailProps {
 const JobDetail: React.FC<JobDetailProps> = ({ job: propJob, onBackClick }) => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [job, setJob] = useState<Job | null>(propJob || null);
   const [loading, setLoading] = useState(!propJob);
   const [error, setError] = useState<string | null>(null);
@@ -33,11 +35,34 @@ const JobDetail: React.FC<JobDetailProps> = ({ job: propJob, onBackClick }) => {
     // Otherwise fetch job by ID from URL
     const fetchJob = async () => {
       try {
-        if (!id) return;
-        const data = await getJobById(parseInt(id));
+        if (!id) {
+          setError('No job ID provided');
+          setLoading(false);
+          return;
+        }
+        
+        console.log('Fetching job with ID:', id);
+        const jobId = parseInt(id);
+        
+        if (isNaN(jobId)) {
+          setError('Invalid job ID');
+          setLoading(false);
+          return;
+        }
+        
+        const data = await getJobById(jobId);
+        
+        if (!data) {
+          setError('Job not found');
+          setLoading(false);
+          return;
+        }
+        
+        console.log('Job data received:', data);
         setJob(data);
         setLoading(false);
       } catch (err) {
+        console.error('Error fetching job:', err);
         setError('Failed to load job details');
         setLoading(false);
       }
@@ -48,11 +73,11 @@ const JobDetail: React.FC<JobDetailProps> = ({ job: propJob, onBackClick }) => {
 
   useEffect(() => {
     const checkApplicationStatus = async () => {
-      if ((!id && !job)) return;
+      if ((!id && !job) || !user) return;
       
       try {
         const jobId = id ? parseInt(id) : job?.id;
-        if (!jobId) return;
+        if (!jobId || isNaN(jobId)) return;
         
         const applied = await hasUserAppliedForJob(jobId);
         setHasApplied(applied);
@@ -62,12 +87,17 @@ const JobDetail: React.FC<JobDetailProps> = ({ job: propJob, onBackClick }) => {
     };
 
     checkApplicationStatus();
-  }, [id, job]);
+  }, [id, job, user]);
 
   const handleApply = async () => {
+    if (!user) {
+      navigate('/auth', { state: { from: location.pathname } });
+      return;
+    }
+
     if (!id && !job) return;
     const jobId = id ? parseInt(id) : job?.id;
-    if (!jobId) return;
+    if (!jobId || isNaN(jobId)) return;
 
     setApplying(true);
     setMessage(null);
@@ -75,15 +105,26 @@ const JobDetail: React.FC<JobDetailProps> = ({ job: propJob, onBackClick }) => {
     try {
       const response = await applyForJob(jobId);
       
-      if (response.success) {
+      if (response && response.success) {
         setHasApplied(true);
         setMessage({ text: 'Application submitted successfully!', type: 'success' });
       } else {
-        setMessage({ text: response.message || 'Failed to submit application', type: 'error' });
+        setMessage({ 
+          text: response?.message || 'Failed to submit application', 
+          type: 'error' 
+        });
       }
     } catch (err) {
       console.error('Error applying for job:', err);
-      setMessage({ text: 'Failed to submit application. Please try again.', type: 'error' });
+      let errorMessage = 'Failed to submit application. Please try again.';
+      
+      if (err instanceof Error && err.message.includes('Authentication required')) {
+        errorMessage = 'Please log in to apply for this job';
+        // Optionally redirect to login page
+        // navigate('/auth');
+      }
+      
+      setMessage({ text: errorMessage, type: 'error' });
     } finally {
       setApplying(false);
     }
@@ -102,7 +143,16 @@ const JobDetail: React.FC<JobDetailProps> = ({ job: propJob, onBackClick }) => {
   }
 
   if (error || !job) {
-    return <div className="error">{error || 'Job not found'}</div>;
+    return (
+      <div className="container">
+        <button className="back-button" onClick={handleBackButton}>
+          ← Back to Jobs
+        </button>
+        <div className="error-container">
+          <div className="error">{error || 'Job not found'}</div>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -118,21 +168,30 @@ const JobDetail: React.FC<JobDetailProps> = ({ job: propJob, onBackClick }) => {
             <div className="job-company">{job.company}</div>
             <div className="job-location">{job.location}</div>
             <div className="job-salary">{formatSalary(job.minSalary, job.maxSalary)}</div>
-            <div className="job-posted">Posted {formatDate(job.createdAt)}</div>
+            <div className="job-posted">Posted {formatDate(job.createdAt || job.postedDate)}</div>
           </div>
           
           <div className="job-actions">
-            {hasApplied ? (
-              <button className="applied-button" disabled>
-                <span className="applied-icon">✓</span> Applied
-              </button>
+            {user ? (
+              hasApplied ? (
+                <button className="applied-button" disabled>
+                  <span className="applied-icon">✓</span> Applied
+                </button>
+              ) : (
+                <button 
+                  className="apply-button" 
+                  onClick={handleApply} 
+                  disabled={applying}
+                >
+                  {applying ? 'Applying...' : 'Apply Now'}
+                </button>
+              )
             ) : (
               <button 
                 className="apply-button" 
-                onClick={handleApply} 
-                disabled={applying}
+                onClick={() => navigate('/auth', { state: { from: location.pathname } })}
               >
-                {applying ? 'Applying...' : 'Apply Now'}
+                Sign in to Apply
               </button>
             )}
           </div>

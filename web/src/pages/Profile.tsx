@@ -30,7 +30,7 @@ const Profile: FC = () => {
     setIsEditing(!isEditing);
   };
   
-  const handleSaveProfile = () => {
+  const handleSaveProfile = async () => {
     // In a real app, you would save the profile changes to the backend
     setIsEditing(false);
   };

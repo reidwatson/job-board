@@ -1,13 +1,15 @@
 import { FC, useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Job } from '../types/Job';
+import { getJobs } from '../services/jobService';
+import LoadingSpinner from '../components/LoadingSpinner';
 import '../styles/SearchJobs.css';
 
-interface SearchJobsProps {
-  jobs: Job[];
-  onJobClick: (job: Job) => void;
-}
-
-const SearchJobs: FC<SearchJobsProps> = ({ jobs, onJobClick }) => {
+const SearchJobs: FC = () => {
+  const navigate = useNavigate();
+  const [jobs, setJobs] = useState<Job[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [filteredJobs, setFilteredJobs] = useState<Job[]>([]);
   const [searchPerformed, setSearchPerformed] = useState<boolean>(false);
@@ -16,6 +18,32 @@ const SearchJobs: FC<SearchJobsProps> = ({ jobs, onJobClick }) => {
     location: '',
     company: ''
   });
+  
+  // Fetch jobs
+  useEffect(() => {
+    const fetchJobs = async () => {
+      try {
+        setLoading(true);
+        const response = await getJobs();
+        console.log('Jobs response:', response);
+        
+        if (response && response.jobs) {
+          setJobs(response.jobs);
+        } else {
+          console.error('Invalid response format:', response);
+          setError('Failed to load jobs');
+          setJobs([]);
+        }
+      } catch (err) {
+        console.error('Error fetching jobs:', err);
+        setError('Failed to load jobs');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchJobs();
+  }, []);
   
   // Update filtered jobs when search term or filters change
   useEffect(() => {
@@ -30,7 +58,8 @@ const SearchJobs: FC<SearchJobsProps> = ({ jobs, onJobClick }) => {
       
       // Check if job matches salary filter
       const matchesSalary = filters.minSalary === '' || 
-        job.salary >= parseInt(filters.minSalary);
+        (job.salary && job.salary >= parseInt(filters.minSalary)) ||
+        (job.minSalary && job.minSalary >= parseInt(filters.minSalary));
       
       // Check if job matches location filter
       const matchesLocation = filters.location === '' || 
@@ -67,6 +96,25 @@ const SearchJobs: FC<SearchJobsProps> = ({ jobs, onJobClick }) => {
       company: ''
     });
   };
+
+  const handleJobClick = (job: Job) => {
+    navigate(`/jobs/${job.id}`);
+  };
+  
+  if (loading) {
+    return <LoadingSpinner message="Loading jobs..." />;
+  }
+
+  if (error) {
+    return (
+      <div className="page-container">
+        <div className="page-header">
+          <h1 className="page-title">Search Jobs</h1>
+          <p className="page-subtitle">Error: {error}</p>
+        </div>
+      </div>
+    );
+  }
   
   // Get unique locations and companies for filter dropdowns
   const uniqueLocations = Array.from(new Set(jobs.map(job => job.location)));
@@ -178,14 +226,18 @@ const SearchJobs: FC<SearchJobsProps> = ({ jobs, onJobClick }) => {
                     <div 
                       key={job.id} 
                       className="job-card" 
-                      onClick={() => onJobClick(job)}
+                      onClick={() => handleJobClick(job)}
                     >
                       <h3>{job.title}</h3>
                       <div className="job-company">{job.company}</div>
                       <div className="job-location">{job.location}</div>
-                      <div className="job-salary">${job.salary.toLocaleString()}</div>
+                      <div className="job-salary">
+                        ${job.minSalary && job.maxSalary 
+                          ? `${job.minSalary.toLocaleString()} - ${job.maxSalary.toLocaleString()}`
+                          : job.salary?.toLocaleString() || 'Not specified'}
+                      </div>
                       <div className="job-posted">
-                        Posted: {new Date(job.postedDate).toLocaleDateString()}
+                        Posted: {new Date(job.createdAt || job.postedDate).toLocaleDateString()}
                       </div>
                     </div>
                   ))}

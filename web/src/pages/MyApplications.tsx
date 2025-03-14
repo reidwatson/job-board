@@ -6,6 +6,7 @@ import { formatDate } from '../utils/formatters';
 import { JobApplication } from '../types/JobApplication';
 import { Job } from '../types/Job';
 import LoadingSpinner from '../components/LoadingSpinner';
+import { useAuth } from '../context/AuthContext';
 import '../styles/MyApplications.css';
 
 interface ApplicationWithJob extends JobApplication {
@@ -14,12 +15,19 @@ interface ApplicationWithJob extends JobApplication {
 
 const MyApplications: React.FC = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [applications, setApplications] = useState<ApplicationWithJob[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchApplications = async () => {
+      if (!user) {
+        setError('You must be logged in to view your applications');
+        setLoading(false);
+        return;
+      }
+
       try {
         setLoading(true);
         const data = await getUserApplications();
@@ -51,7 +59,7 @@ const MyApplications: React.FC = () => {
     };
 
     fetchApplications();
-  }, []);
+  }, [user]);
 
   const getStatusClass = (status: string): string => {
     switch (status.toLowerCase()) {

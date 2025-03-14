@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import LoadingSpinner from '../components/LoadingSpinner';
 import '../styles/Auth.css';
 
 const Auth: React.FC = () => {
-  const [isLogin, setIsLogin] = useState(true);
+  const location = useLocation();
+  const [isLogin, setIsLogin] = useState(!location.state?.signup);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [firstName, setFirstName] = useState('');
@@ -13,15 +14,17 @@ const Auth: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   
-  const { login, signup, isAuthenticated, isLoading: authLoading } = useAuth();
+  const { user, isAuthenticated, isLoading: authLoading, login, signup, logout } = useAuth();
   const navigate = useNavigate();
   
   // Redirect if already authenticated
   useEffect(() => {
     if (isAuthenticated) {
-      navigate('/');
+      // If there's a redirect path in the state, use it
+      const from = location.state?.from || '/';
+      navigate(from);
     }
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated, navigate, location]);
   
   const toggleMode = () => {
     setIsLogin(!isLogin);
@@ -41,6 +44,11 @@ const Auth: React.FC = () => {
     
     if (!isLogin && password.length < 6) {
       setError('Password must be at least 6 characters long');
+      return false;
+    }
+    
+    if (!isLogin && (!firstName || !lastName)) {
+      setError('First name and last name are required');
       return false;
     }
     
@@ -67,7 +75,7 @@ const Auth: React.FC = () => {
       }
       
       if (success) {
-        navigate('/');
+        // The redirect will happen in the useEffect above
       } else {
         setError(isLogin ? 'Invalid email or password' : 'Failed to create account');
       }
@@ -131,6 +139,7 @@ const Auth: React.FC = () => {
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
                   disabled={isLoading}
+                  required
                 />
               </div>
               
@@ -142,6 +151,7 @@ const Auth: React.FC = () => {
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
                   disabled={isLoading}
+                  required
                 />
               </div>
             </>

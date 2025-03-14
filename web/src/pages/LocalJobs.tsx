@@ -1,16 +1,16 @@
 import { FC, useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Job } from '../types/Job';
+import { getJobs } from '../services/jobService';
+import LoadingSpinner from '../components/LoadingSpinner';
 import '../styles/LocalJobs.css';
-// Import React Leaflet components directly
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 
-// Import Leaflet CSS
+// Import Leaflet components
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-// Import Leaflet for icon fixes
 import L from 'leaflet';
 
-// Fix Leaflet default icon issues
-// This needs to be done before rendering any markers
+// Fix Leaflet icon issue
 const fixLeafletIcon = () => {
   delete L.Icon.Default.prototype._getIconUrl;
   L.Icon.Default.mergeOptions({
@@ -21,21 +21,44 @@ const fixLeafletIcon = () => {
 };
 fixLeafletIcon();
 
-interface LocalJobsProps {
-  jobs: Job[];
-  onJobClick: (job: Job) => void;
-}
-
 interface JobWithCoordinates extends Job {
   lat?: number;
   lng?: number;
 }
 
-const LocalJobs: FC<LocalJobsProps> = ({ jobs, onJobClick }) => {
+const LocalJobs: FC = () => {
+  const navigate = useNavigate();
+  const [jobs, setJobs] = useState<Job[]>([]);
   const [userLocation, setUserLocation] = useState<[number, number] | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const [fetchingJobs, setFetchingJobs] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [jobsWithCoordinates, setJobsWithCoordinates] = useState<JobWithCoordinates[]>([]);
+
+  // Fetch jobs
+  useEffect(() => {
+    const fetchJobs = async () => {
+      try {
+        setFetchingJobs(true);
+        const response = await getJobs();
+        console.log('Jobs response:', response);
+        
+        if (response && response.jobs) {
+          setJobs(response.jobs);
+        } else {
+          console.error('Invalid response format:', response);
+          setJobs([]);
+        }
+      } catch (err) {
+        console.error('Error fetching jobs:', err);
+        setError('Failed to load jobs');
+      } finally {
+        setFetchingJobs(false);
+      }
+    };
+
+    fetchJobs();
+  }, []);
 
   // Get user's location
   useEffect(() => {
@@ -59,7 +82,7 @@ const LocalJobs: FC<LocalJobsProps> = ({ jobs, onJobClick }) => {
 
   // Simulate geocoding job locations to get coordinates
   useEffect(() => {
-    if (!userLocation) return;
+    if (!userLocation || !jobs.length) return;
 
     // This is a simulation - in a real app, you would geocode the addresses
     const simulateGeocode = (job: Job): JobWithCoordinates => {
@@ -82,19 +105,12 @@ const LocalJobs: FC<LocalJobsProps> = ({ jobs, onJobClick }) => {
     setJobsWithCoordinates(localJobs);
   }, [jobs, userLocation]);
 
-  if (loading) {
-    return (
-      <div className="page-container">
-        <div className="page-header">
-          <h1 className="page-title">Local Jobs</h1>
-          <p className="page-subtitle">Discover job opportunities near your location</p>
-        </div>
-        <div className="loading-container">
-          <div className="spinner"></div>
-          <p>Getting your location...</p>
-        </div>
-      </div>
-    );
+  const handleJobClick = (job: Job) => {
+    navigate(`/jobs/${job.id}`);
+  };
+
+  if (loading || fetchingJobs) {
+    return <LoadingSpinner message={loading ? "Getting your location..." : "Loading jobs..."} />;
   }
 
   if (error) {
@@ -132,20 +148,18 @@ const LocalJobs: FC<LocalJobsProps> = ({ jobs, onJobClick }) => {
         <div className="map-container">
           <MapContainer 
             center={userLocation} 
-            zoom={12} 
-            style={{ height: '500px', width: '100%' }}
+            zoom={13} 
+            style={{ height: '100%', width: '100%' }}
           >
             <TileLayer
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             />
             
             {/* User location marker */}
             <Marker position={userLocation}>
               <Popup>
-                <div className="user-location-popup">
-                  <h3>Your Location</h3>
-                </div>
+                Your location
               </Popup>
             </Marker>
             
@@ -156,29 +170,15 @@ const LocalJobs: FC<LocalJobsProps> = ({ jobs, onJobClick }) => {
                   key={job.id} 
                   position={[job.lat, job.lng]}
                   eventHandlers={{
-                    click: () => {
-                      onJobClick(job);
-                    },
-                    mouseover: (e: any) => {
-                      e.target.openPopup();
-                    }
+                    click: () => handleJobClick(job),
                   }}
                 >
                   <Popup>
                     <div className="job-popup">
                       <h3>{job.title}</h3>
-                      <p className="job-company">{job.company}</p>
-                      <p className="job-location">{job.location}</p>
-                      <p className="job-distance">
-                        {calculateDistance(userLocation[0], userLocation[1], job.lat, job.lng).toFixed(1)} miles away
-                      </p>
-                      <p className="job-salary">${job.salary.toLocaleString()}</p>
-                      <button 
-                        className="view-job-button"
-                        onClick={() => onJobClick(job)}
-                      >
-                        View Details
-                      </button>
+                      <p>{job.company}</p>
+                      <p>{job.location}</p>
+                      <button onClick={() => handleJobClick(job)}>View Details</button>
                     </div>
                   </Popup>
                 </Marker>
@@ -197,7 +197,7 @@ const LocalJobs: FC<LocalJobsProps> = ({ jobs, onJobClick }) => {
                 <div 
                   key={job.id} 
                   className="job-card" 
-                  onClick={() => onJobClick(job)}
+                  onClick={() => handleJobClick(job)}
                 >
                   <div className="job-card-content">
                     <h2 className="job-title">{job.title}</h2>
@@ -208,7 +208,7 @@ const LocalJobs: FC<LocalJobsProps> = ({ jobs, onJobClick }) => {
                         `~${calculateDistance(userLocation[0], userLocation[1], job.lat, job.lng).toFixed(1)} miles away` : 
                         'Distance unknown'}
                     </div>
-                    <div className="job-salary">${job.salary.toLocaleString()}</div>
+                    <div className="job-salary">${job.salary?.toLocaleString() || 'Not specified'}</div>
                   </div>
                 </div>
               ))}
