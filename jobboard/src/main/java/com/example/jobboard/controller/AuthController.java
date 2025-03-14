@@ -23,7 +23,6 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<AuthResponse> signup(@Valid @RequestBody SignupRequest signupRequest) {
-        System.out.println("Signup request received: " + signupRequest.getEmail());
         AuthResponse response = authService.signup(signupRequest);
         
         if (response.isSuccess()) {

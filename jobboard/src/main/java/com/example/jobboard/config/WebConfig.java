@@ -21,6 +21,8 @@ public class WebConfig {
                             "http://127.0.0.1:4173",
                             "https://reidsjobboard.com",
                             "https://www.reidsjobboard.com",
+                            "http://reidsjobboard.com",
+                            "http://www.reidsjobboard.com",
                         )
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
