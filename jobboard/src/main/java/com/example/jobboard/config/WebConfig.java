@@ -22,7 +22,7 @@ public class WebConfig {
                             "https://reidsjobboard.com",
                             "https://www.reidsjobboard.com",
                             "http://reidsjobboard.com",
-                            "http://www.reidsjobboard.com",
+                            "http://www.reidsjobboard.com"
                         )
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
