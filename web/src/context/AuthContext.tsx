@@ -1,4 +1,5 @@
 import React, { createContext, useState, useEffect, ReactNode } from 'react';
+import { API_BASE_URL } from '../config';
 
 // Define the User type
 export interface User {
@@ -49,7 +50,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           const parsedUser = JSON.parse(storedUser);
           
           // Validate the token with the backend
-          const response = await fetch(`/api/auth/validate?token=${parsedUser.token}`);
+          const response = await fetch(`${API_BASE_URL}/api/auth/validate?token=${parsedUser.token}`);
           const isValid = await response.json();
           
           if (isValid) {
@@ -73,7 +74,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   // Login function
   const login = async (email: string, password: string): Promise<boolean> => {
     try {
-      const response = await fetch('/api/auth/login', {
+      const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -106,7 +107,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     lastName?: string
   ): Promise<boolean> => {
     try {
-      const response = await fetch('/api/auth/signup', {
+      const response = await fetch(`${API_BASE_URL}/api/auth/signup`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
