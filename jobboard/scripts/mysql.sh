@@ -10,7 +10,7 @@ NC='\033[0m' # No Color
 # MySQL configuration
 DB_NAME="jobboard"
 DB_USER="root"
-DB_PASSWORD=""
+DB_PASSWORD="1R0uh19uD3Cl"
 
 # Function to check if MySQL is running
 check_mysql_status() {
