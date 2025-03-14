@@ -13,7 +13,7 @@ echo ""
 
 # Check if MySQL is running
 echo -e "${BLUE}Checking if MySQL is running...${NC}"
-if ! mysqladmin ping -h localhost -u root --silent 2>/dev/null; then
+if ! mysqladmin ping -h localhost -u root -p1R0uh19uD3Cl --silent 2>/dev/null; then
     echo -e "${YELLOW}MySQL is not running. Please start MySQL first:${NC}"
     echo -e "${GREEN}bash scripts/mysql.sh start${NC}"
     echo ""
@@ -31,9 +31,9 @@ fi
 
 # Check if the database exists
 echo -e "${BLUE}Checking if database 'jobboard' exists...${NC}"
-if ! mysql -u root -e "USE jobboard;" 2>/dev/null; then
+if ! mysql -u root -p1R0uh19uD3Cl -e "USE jobboard;" 2>/dev/null; then
     echo -e "${YELLOW}Database 'jobboard' does not exist. Creating it...${NC}"
-    if mysql -u root -e "CREATE DATABASE jobboard;" 2>/dev/null; then
+    if mysql -u root -p1R0uh19uD3Cl -e "CREATE DATABASE jobboard;" 2>/dev/null; then
         echo -e "${GREEN}Database 'jobboard' created successfully.${NC}"
     else
         echo -e "${RED}Failed to create database 'jobboard'. Please create it manually:${NC}"

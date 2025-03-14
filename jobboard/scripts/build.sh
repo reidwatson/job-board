@@ -13,7 +13,7 @@ echo ""
 # Check if MySQL is running (only needed for tests)
 if [ "$1" != "--skip-tests" ]; then
     echo -e "${BLUE}Checking if MySQL is running (needed for tests)...${NC}"
-    if ! mysqladmin ping -h localhost -u root --silent 2>/dev/null; then
+    if ! mysqladmin ping -h localhost -u root -p1R0uh19uD3Cl --silent 2>/dev/null; then
         echo -e "${YELLOW}MySQL is not running. Tests may fail.${NC}"
         echo -e "${YELLOW}You can:${NC}"
         echo -e "${GREEN}1. Start MySQL: bash scripts/mysql.sh start${NC}"
@@ -29,9 +29,9 @@ if [ "$1" != "--skip-tests" ]; then
         
         # Check if the database exists
         echo -e "${BLUE}Checking if database 'jobboard' exists...${NC}"
-        if ! mysql -u root -e "USE jobboard;" 2>/dev/null; then
+        if ! mysql -u root -p1R0uh19uD3Cl -e "USE jobboard;" 2>/dev/null; then
             echo -e "${YELLOW}Database 'jobboard' does not exist. Creating it...${NC}"
-            if mysql -u root -e "CREATE DATABASE jobboard;" 2>/dev/null; then
+            if mysql -u root -p1R0uh19uD3Cl -e "CREATE DATABASE jobboard;" 2>/dev/null; then
                 echo -e "${GREEN}Database 'jobboard' created successfully.${NC}"
             else
                 echo -e "${RED}Failed to create database 'jobboard'. Tests may fail.${NC}"
