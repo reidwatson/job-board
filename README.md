@@ -2,7 +2,7 @@
 
 Here is my excercise in the tech stack from the job description -- spring boot api / mysql db / react frontend. It has some simple job board features that I got from using the product: Browse job listings, see jobs on a map near me (prototype), search for jobs, post a job, apply for a job, see my applications. It uses very basic auth with salted + hashed passwords in the mysql db.
 
-I have never made a spring boot api from scratch before, or used mysql despite many years working with sql servers, and thought this would be fun. I heavily relied on Claude sonnet 3.7 with Cursor to build this -- so there are certainly some bad pracices in this repository.
+I have never made a spring boot api from scratch before, or used mysql despite many years working with sql servers, and thought this would be fun. I heavily relied on Claude sonnet 3.7 with Cursor to build this in less than 24hrs -- so there are certainly some bad pracices in this repository 😅
 
 ## 🔗 Live Demo
 
