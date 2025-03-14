@@ -1,13 +1,10 @@
-import { FC, useState } from 'react';
+import { FC } from 'react';
 import { useAuth } from '../context/AuthContext';
 import LoadingSpinner from '../components/LoadingSpinner';
 import '../styles/Profile.css';
 
 const Profile: FC = () => {
   const { user, isLoading } = useAuth();
-  const [isEditing, setIsEditing] = useState(false);
-  const [phone, setPhone] = useState('(555) 123-4567');
-  const [location, setLocation] = useState('San Francisco, CA');
   
   if (isLoading) {
     return <LoadingSpinner message="Loading profile..." />;
@@ -25,15 +22,6 @@ const Profile: FC = () => {
   }
   
   const fullName = `${user.firstName || ''} ${user.lastName || ''}`.trim() || 'User';
-  
-  const handleEditToggle = () => {
-    setIsEditing(!isEditing);
-  };
-  
-  const handleSaveProfile = async () => {
-    // In a real app, you would save the profile changes to the backend
-    setIsEditing(false);
-  };
   
   return (
     <div className="page-container">
@@ -70,21 +58,6 @@ const Profile: FC = () => {
           <div className="profile-info">
             <h2>{fullName}</h2>
             <p className="profile-email">{user.email}</p>
-            <p className="profile-location">{location}</p>
-            <button 
-              className="edit-profile-button"
-              onClick={handleEditToggle}
-            >
-              {isEditing ? 'Cancel' : 'Edit Profile'}
-            </button>
-            {isEditing && (
-              <button 
-                className="save-profile-button"
-                onClick={handleSaveProfile}
-              >
-                Save Changes
-              </button>
-            )}
           </div>
         </div>
         
@@ -93,58 +66,17 @@ const Profile: FC = () => {
           <div className="profile-details">
             <div className="profile-detail-item">
               <span className="detail-label">Full Name</span>
-              {isEditing ? (
-                <div className="detail-edit">
-                  <input 
-                    type="text" 
-                    value={user.firstName || ''} 
-                    placeholder="First Name"
-                    disabled
-                  />
-                  <input 
-                    type="text" 
-                    value={user.lastName || ''} 
-                    placeholder="Last Name"
-                    disabled
-                  />
-                </div>
-              ) : (
-                <span className="detail-value">{fullName}</span>
-              )}
+              <span className="detail-value">{fullName}</span>
             </div>
             <div className="profile-detail-item">
               <span className="detail-label">Email</span>
               <span className="detail-value">{user.email}</span>
             </div>
-            <div className="profile-detail-item">
-              <span className="detail-label">Phone</span>
-              {isEditing ? (
-                <input 
-                  type="text" 
-                  value={phone} 
-                  onChange={(e) => setPhone(e.target.value)}
-                />
-              ) : (
-                <span className="detail-value">{phone}</span>
-              )}
-            </div>
-            <div className="profile-detail-item">
-              <span className="detail-label">Location</span>
-              {isEditing ? (
-                <input 
-                  type="text" 
-                  value={location} 
-                  onChange={(e) => setLocation(e.target.value)}
-                />
-              ) : (
-                <span className="detail-value">{location}</span>
-              )}
-            </div>
           </div>
         </div>
         
         <div className="profile-section">
-          <h3 className="section-title">Resume</h3>
+          <h3 className="section-title">Resume (not implemented yet)</h3>
           <div className="resume-container">
             <div className="resume-placeholder">
               <svg className="document-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -161,7 +93,7 @@ const Profile: FC = () => {
         </div>
         
         <div className="profile-section">
-          <h3 className="section-title">Skills</h3>
+          <h3 className="section-title">Skills (not implemented yet)</h3>
           <div className="skills-container">
             <div className="skill-tag">JavaScript</div>
             <div className="skill-tag">React</div>
@@ -174,7 +106,7 @@ const Profile: FC = () => {
         </div>
         
         <div className="profile-section">
-          <h3 className="section-title">Preferences</h3>
+          <h3 className="section-title">Preferences (not implemented yet)</h3>
           <div className="preferences-container">
             <div className="preference-item">
               <label className="preference-label">

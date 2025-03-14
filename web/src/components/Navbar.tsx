@@ -83,18 +83,6 @@ const Navbar: FC<NavbarProps> = ({ activePage, onNavigate }) => {
             Browse Jobs
           </button>
           <button 
-            className={`nav-link ${activePage === 'local' ? 'active' : ''}`}
-            onClick={() => handleNavigate('local')}
-          >
-            Local Jobs
-          </button>
-          <button 
-            className={`nav-link ${activePage === 'search' ? 'active' : ''}`}
-            onClick={() => handleNavigate('search')}
-          >
-            Search Jobs
-          </button>
-          <button 
             className={`nav-link nav-link-accent ${activePage === 'post' ? 'active' : ''}`}
             onClick={() => handleNavigate('post')}
           >
@@ -184,19 +172,6 @@ const Navbar: FC<NavbarProps> = ({ activePage, onNavigate }) => {
               onClick={() => handleNavigate('login')}
             >
               Sign In
-            </button>
-            <button 
-              className="auth-button signup-button"
-              onClick={() => {
-                navigate('/auth', { 
-                  state: { 
-                    from: location.pathname,
-                    signup: true 
-                  } 
-                });
-              }}
-            >
-              Sign Up
             </button>
           </div>
         )}

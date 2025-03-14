@@ -98,21 +98,21 @@ const JobPostForm: FC = () => {
   
   const handleAutoFill = () => {
     const jobTitles = [
-      'Senior Software Engineer',
-      'Frontend Developer',
-      'UX Designer',
-      'Product Manager',
-      'Data Scientist',
-      'DevOps Engineer'
+      'Dental Hygienist',
+      'Dental Assistant',
+      'Dentist',
+      'Orthodontist',
+      'Dental Office Manager',
+      'Pediatric Dentist'
     ];
     
     const companies = [
-      'Tech Innovations Inc.',
-      'Digital Solutions Group',
-      'Future Systems',
-      'Cloud Dynamics',
-      'Data Insights Corp',
-      'Creative Tech Labs'
+      'Bright Smile Dental',
+      'Family Dental Care',
+      'Sunshine Orthodontics',
+      'Perfect Teeth Clinic',
+      'Gentle Dental Associates',
+      'Happy Kids Dental'
     ];
     
     const locations = [
@@ -125,15 +125,15 @@ const JobPostForm: FC = () => {
     ];
     
     const descriptions = [
-      'We are looking for an experienced professional to join our team and help build cutting-edge applications. You will be responsible for designing, developing, and maintaining high-quality software solutions.',
-      'Join our team to work on exciting projects that impact millions of users. You will collaborate with cross-functional teams to deliver innovative solutions that drive business growth.',
-      'We need a talented individual to help us create exceptional user experiences. You will be involved in all aspects of the development lifecycle, from concept to deployment.'
+      'We are looking for an experienced dental professional to join our team. You will be responsible for providing high-quality dental care to our patients in a comfortable and welcoming environment.',
+      'Join our dental practice to work with state-of-the-art equipment and a supportive team. You will help patients maintain their oral health and create beautiful smiles.',
+      'We need a talented dental professional to help us deliver exceptional patient care. You will be involved in all aspects of dental treatment, from preventive care to complex procedures.'
     ];
     
     const requirements = [
-      'Bachelor\'s degree in Computer Science or related field. 5+ years of experience in software development. Strong problem-solving skills and attention to detail.',
-      'Experience with modern frameworks and technologies. Excellent communication skills. Ability to work in a fast-paced environment.',
-      'Proven track record of delivering high-quality projects. Knowledge of best practices and design patterns. Team player with a positive attitude.'
+      'Dental degree or certification required. 2+ years of experience in a dental practice. Strong patient care skills and attention to detail.',
+      'Experience with modern dental techniques and technologies. Excellent communication skills. Ability to work in a fast-paced environment.',
+      'Proven track record of providing high-quality dental care. Knowledge of best practices in dental hygiene. Team player with a positive attitude.'
     ];
     
     const randomIndex = (arr: any[]) => Math.floor(Math.random() * arr.length);
@@ -144,8 +144,8 @@ const JobPostForm: FC = () => {
       location: locations[randomIndex(locations)],
       description: descriptions[randomIndex(descriptions)],
       requirements: requirements[randomIndex(requirements)],
-      salary: (80000 + Math.floor(Math.random() * 120000)).toString(),
-      contactEmail: 'careers@example.com'
+      salary: (60000 + Math.floor(Math.random() * 80000)).toString(),
+      contactEmail: 'careers@dentalclinic.com'
     });
   };
   
@@ -277,13 +277,6 @@ const JobPostForm: FC = () => {
           </div>
           
           <div className="form-actions">
-            <button 
-              type="button" 
-              className="cancel-button"
-              onClick={() => navigate('/jobs')}
-            >
-              Cancel
-            </button>
             <button 
               type="submit" 
               className="submit-button"

@@ -6,10 +6,27 @@ import { API_BASE_URL } from '../config';
  */
 export const applyForJob = async (jobId: number): Promise<{ success: boolean; message?: string }> => {
   try {
+    // Get the user object from localStorage
+    const userJson = localStorage.getItem('user');
+    
+    if (!userJson) {
+      throw new Error('Authentication required');
+    }
+    
+    // Parse the user object and get the token
+    const user = JSON.parse(userJson);
+    const token = user.token;
+    
+    if (!token) {
+      throw new Error('Authentication required');
+    }
+    
+    
     const response = await fetch(`${API_BASE_URL}/api/applications`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
       },
       body: JSON.stringify({ 
         jobId: Number(jobId)
@@ -17,7 +34,9 @@ export const applyForJob = async (jobId: number): Promise<{ success: boolean; me
     });
     
     if (!response.ok) {
-      throw new Error('Failed to apply for job');
+      const errorData = await response.json();
+      console.error('Error response from server:', errorData);
+      throw new Error(errorData.message || 'Failed to apply for job');
     }
     
     return { success: true, message: 'Application submitted successfully!' };
@@ -33,13 +52,36 @@ export const applyForJob = async (jobId: number): Promise<{ success: boolean; me
  */
 export const hasUserAppliedForJob = async (jobId: number): Promise<boolean> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/applications/check?jobId=${Number(jobId)}`);
+    // Get the user object from localStorage
+    const userJson = localStorage.getItem('user');
+    
+    if (!userJson) {
+      return false;
+    }
+    
+    // Parse the user object and get the token
+    const user = JSON.parse(userJson);
+    const token = user.token;
+    
+    if (!token) {
+      return false;
+    }
+    
+    console.log('Using token for check:', token);
+    
+    const response = await fetch(`${API_BASE_URL}/api/applications/check?jobId=${Number(jobId)}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
     
     if (!response.ok) {
+      console.error('Error response from server (check):', response.status, response.statusText);
       return false;
     }
     
     const data = await response.json();
+    console.log('Application check result:', data);
     return Boolean(data);
   } catch (error) {
     console.error('Error checking application status:', error);
@@ -52,13 +94,38 @@ export const hasUserAppliedForJob = async (jobId: number): Promise<boolean> => {
  */
 export const getUserApplications = async () => {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/applications/user`);
+    // Get the user object from localStorage
+    const userJson = localStorage.getItem('user');
+    console.log('User JSON from localStorage (applications):', userJson);
+    
+    if (!userJson) {
+      throw new Error('Authentication required');
+    }
+    
+    // Parse the user object and get the token
+    const user = JSON.parse(userJson);
+    const token = user.token;
+    
+    if (!token) {
+      throw new Error('Authentication required');
+    }
+    
+    console.log('Using token for applications:', token);
+    
+    const response = await fetch(`${API_BASE_URL}/api/applications/user`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
     
     if (!response.ok) {
+      console.error('Error response from server (applications):', response.status, response.statusText);
       throw new Error('Failed to fetch applications');
     }
     
-    return await response.json();
+    const data = await response.json();
+    console.log('Applications data:', data);
+    return data;
   } catch (error) {
     console.error('Error fetching applications:', error);
     throw error;
