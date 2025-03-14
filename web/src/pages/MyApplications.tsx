@@ -48,7 +48,14 @@ const MyApplications: React.FC = () => {
           })
         );
         
-        setApplications(applicationsWithJobs);
+        // Sort applications in descending order by application time
+        const sortedApplications = applicationsWithJobs.sort((a, b) => {
+          const dateA = new Date(a.appliedAt || 0);
+          const dateB = new Date(b.appliedAt || 0);
+          return dateB.getTime() - dateA.getTime();
+        });
+        
+        setApplications(sortedApplications);
         setError(null);
       } catch (err) {
         setError('Failed to load your applications');

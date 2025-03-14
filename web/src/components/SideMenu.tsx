@@ -56,6 +56,27 @@ const SideMenu: FC<SideMenuProps> = ({ activePage, onNavigate }) => {
             </svg>
             Recent Jobs
           </button>
+          <button 
+            className={`menu-item ${activePage === 'local' ? 'active' : ''}`}
+            onClick={() => handleNavigate('local')}
+          >
+            <svg className="menu-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 21C16.4183 21 20 17.4183 20 13C20 8.58172 16.4183 5 12 5C7.58172 5 4 8.58172 4 13C4 17.4183 7.58172 21 12 21Z" stroke="currentColor" strokeWidth="2"/>
+              <path d="M12 13C13.1046 13 14 12.1046 14 11C14 9.89543 13.1046 9 12 9C10.8954 9 10 9.89543 10 11C10 12.1046 10.8954 13 12 13Z" stroke="currentColor" strokeWidth="2"/>
+              <path d="M12 13V17" stroke="currentColor" strokeWidth="2"/>
+            </svg>
+            Local Jobs
+          </button>
+          <button 
+            className={`menu-item ${activePage === 'search' ? 'active' : ''}`}
+            onClick={() => handleNavigate('search')}
+          >
+            <svg className="menu-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M11 19C15.4183 19 19 15.4183 19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19Z" stroke="currentColor" strokeWidth="2"/>
+              <path d="M21 21L16.65 16.65" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+            </svg>
+            Search Jobs
+          </button>
         </nav>
       </div>
       

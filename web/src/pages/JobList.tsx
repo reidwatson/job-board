@@ -20,7 +20,13 @@ const JobList: FC<JobListProps> = ({ jobs: propJobs, onJobClick }) => {
 
   useEffect(() => {
     if (propJobs) {
-      setJobs(propJobs);
+      // Sort the provided jobs in descending order by creation time
+      const sortedJobs = [...propJobs].sort((a, b) => {
+        const dateA = new Date(a.createdAt || a.postedDate || 0);
+        const dateB = new Date(b.createdAt || b.postedDate || 0);
+        return dateB.getTime() - dateA.getTime();
+      });
+      setJobs(sortedJobs);
       setLoading(false);
       return;
     }
@@ -32,7 +38,13 @@ const JobList: FC<JobListProps> = ({ jobs: propJobs, onJobClick }) => {
         console.log('Jobs response:', response);
         
         if (response && response.jobs) {
-          setJobs(response.jobs);
+          // Sort jobs in descending order by creation time
+          const sortedJobs = [...response.jobs].sort((a, b) => {
+            const dateA = new Date(a.createdAt || a.postedDate || 0);
+            const dateB = new Date(b.createdAt || b.postedDate || 0);
+            return dateB.getTime() - dateA.getTime();
+          });
+          setJobs(sortedJobs);
         } else {
           setJobs([]);
           console.error('Invalid response format:', response);
