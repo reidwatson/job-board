@@ -68,6 +68,15 @@ web/
 └── vite.config.ts
 ```
 
+## Technology Stack
+
+- **React 19**: Modern JavaScript library for building user interfaces
+- **TypeScript**: Adds static typing to JavaScript for better developer experience
+- **Vite**: Next-generation frontend build tool for faster development
+- **Leaflet/React-Leaflet**: Interactive map components for location-based features
+- **CSS3**: Custom styling with CSS variables for consistent design
+- **Fetch API**: Native browser API for making HTTP requests to the backend
+
 ## Prerequisites
 
 - Node.js (v14 or higher)
@@ -157,11 +166,19 @@ The application features a modern navigation system with:
 - Success and error messages for feedback
 - Automatic redirection to job listings after successful posting
 
+## Deployment
+
+The application can be deployed using:
+
+1. **Static hosting**: After building, the `dist` directory can be deployed to any static hosting service
+2. **Docker**: Can be containerized for consistent deployment across environments
+3. **Nginx**: Can be served using Nginx as a reverse proxy with SSL termination
+
 ## External Libraries
 
 - React Leaflet for interactive maps
 - Leaflet for map functionality
-- React Router for navigation (planned for future implementation)
+- React Router for navigation
 
 ## Notes
 
