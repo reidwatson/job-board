@@ -1,0 +1,9 @@
+com/example/jobboard/service/JobServiceImpl.class
+com/example/jobboard/repository/JobRepository.class
+com/example/jobboard/config/WebConfig$1.class
+com/example/jobboard/service/JobService.class
+com/example/jobboard/model/Job.class
+com/example/jobboard/controller/GlobalExceptionHandler.class
+com/example/jobboard/config/WebConfig.class
+com/example/jobboard/controller/JobController.class
+com/example/jobboard/JobBoardApplication.class

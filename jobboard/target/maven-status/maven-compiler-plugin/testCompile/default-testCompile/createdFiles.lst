@@ -1,0 +1,4 @@
+com/example/AppTest.class
+com/example/jobboard/service/JobServiceImplTest.class
+com/example/jobboard/integration/JobControllerIntegrationTest.class
+com/example/jobboard/controller/JobControllerTest.class

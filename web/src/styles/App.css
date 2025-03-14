@@ -1,0 +1,80 @@
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.content-container {
+  display: flex;
+  flex: 1;
+  max-width: 90%;
+  margin: 0 auto;
+  width: 100%;
+  padding: 0;
+  position: relative;
+}
+
+.header {
+  background-color: var(--primary-color);
+  color: var(--white);
+  padding: 1.5rem;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 2.5rem;
+}
+
+.main-content {
+  flex: 1;
+  padding: 2rem;
+  margin-left: 250px; /* Match the width of the side menu */
+}
+
+.page-title {
+  color: var(--primary-color);
+  margin-bottom: 1rem;
+  font-size: 2.5rem;
+  text-align: left;
+  transition: opacity 0.3s;
+}
+
+.page-title.hidden {
+  display: none;
+}
+
+.footer {
+  background-color: var(--primary-color);
+  color: var(--white);
+  text-align: center;
+  padding: 1rem;
+  margin-top: auto;
+}
+
+.loading, .error {
+  text-align: center;
+  padding: 2rem;
+  font-size: 1.2rem;
+}
+
+.error {
+  color: #d32f2f;
+}
+
+/* When no sidebar is shown */
+.main-content-full {
+  margin-left: 0;
+}
+
+@media (max-width: 768px) {
+  .content-container {
+    flex-direction: column;
+  }
+  
+  .main-content {
+    padding: 1.5rem;
+    margin-left: 0;
+  }
+} 
