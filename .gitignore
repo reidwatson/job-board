@@ -1,2 +1,6 @@
 web/node_modules
 web/.env
+
+jobboard/target/jobboard-1.0-SNAPSHOT.jar
+jobboard/target/jobboard-1.0-SNAPSHOT.jar.original
+jobboard/src/main/resources/application.properties
